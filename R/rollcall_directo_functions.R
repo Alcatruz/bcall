@@ -6,21 +6,28 @@
 #'
 #' @description
 #' Loads a rollcall matrix directly from CSV format where rows are legislators
-#' and columns are voting sessions. Automatically detects legislator names
-#' and prepares data for clustering and B-Call analysis.
+#' and columns are voting sessions. Optionally loads party information from
+#' a separate CSV file (columns: legislator, party) to enable party-based analysis.
 #'
 #' @param rollcall_csv_file Path to CSV file with rollcall matrix
+#' @param party_csv_file Optional path to CSV with party info (columns: legislator, party)
 #' @param verbose Logical, whether to print progress messages
 #'
-#' @return List containing rollcall matrix and basic legislator info
+#' @return List containing rollcall matrix and legislator info (with party if provided)
 #'
 #' @examples
 #' \dontrun{
-#' rollcall_data <- load_rollcall_direct("C:/path/to/CHL-DIP-2022.csv")
+#' # Without party info (for auto-clustering)
+#' rollcall_data <- load_rollcall_direct("rollcall.csv")
+#' results <- generate_clustering_from_rollcall_direct("rollcall.csv")
+#'
+#' # With party info (for run_bcall_from_rollcall)
+#' rollcall_data <- load_rollcall_direct("rollcall.csv", "parties.csv")
+#' results <- run_bcall_from_rollcall(rollcall_data, pivot = "Legislator_Name")
 #' }
 #'
 #' @export
-load_rollcall_direct <- function(rollcall_csv_file, verbose = TRUE) {
+load_rollcall_direct <- function(rollcall_csv_file, party_csv_file = NULL, verbose = TRUE) {
 
   if (verbose) cat("=== CARGANDO ROLLCALL DIRECTO DESDE CSV ===\n")
 
@@ -101,12 +108,50 @@ load_rollcall_direct <- function(rollcall_csv_file, verbose = TRUE) {
   # Calcular participación por legislador
   legislators_info$participation <- 1 - rowSums(is.na(rollcall_matrix)) / ncol(rollcall_matrix)
 
+  # Cargar información de partidos si se proporciona
+  if (!is.null(party_csv_file)) {
+    if (verbose) cat("   - Cargando información de partidos desde CSV...\n")
+
+    if (!file.exists(party_csv_file)) {
+      stop(paste("Archivo CSV de partidos no encontrado:", party_csv_file))
+    }
+
+    # Cargar CSV de partidos
+    party_data <- read.csv(party_csv_file, stringsAsFactors = FALSE)
+
+    # Verificar que tenga las columnas necesarias
+    if (!"legislator" %in% colnames(party_data) || !"party" %in% colnames(party_data)) {
+      stop("El archivo CSV de partidos debe tener columnas 'legislator' y 'party'")
+    }
+
+    if (verbose) {
+      cat("   - Partidos encontrados:", length(unique(party_data$party)), "\n")
+      cat("   - Legisladores con partido:", nrow(party_data), "\n")
+    }
+
+    # Hacer merge con legislators_info usando nm_y_apellidos como clave
+    legislators_info <- merge(legislators_info, party_data,
+                             by.x = "nm_y_apellidos", by.y = "legislator",
+                             all.x = TRUE)
+
+    # Verificar cuántos legisladores tienen información de partido
+    legislators_with_party <- sum(!is.na(legislators_info$party))
+    if (verbose) {
+      cat("   - Legisladores con partido asignado:", legislators_with_party, "/", nrow(legislators_info), "\n")
+    }
+
+    if (legislators_with_party == 0) {
+      warning("Ningún legislador del rollcall fue encontrado en el archivo de partidos. Verifique los nombres.")
+    }
+  }
+
   # Preparar resultado
   result <- list(
     rollcall_matrix = rollcall_matrix,
     legislators_info = legislators_info,
     metadata = list(
       source_file = rollcall_csv_file,
+      party_file = party_csv_file,
       legislators_count = nrow(rollcall_matrix),
       votaciones_count = ncol(rollcall_matrix),
       completeness_percent = completeness,
@@ -116,8 +161,14 @@ load_rollcall_direct <- function(rollcall_csv_file, verbose = TRUE) {
 
   if (verbose) {
     cat("✅ ROLLCALL CARGADO EXITOSAMENTE\n")
-    cat("   - Listo para clustering automático\n")
-    cat("   - Use generate_clustering_from_rollcall_direct() para continuar\n")
+    if (!is.null(party_csv_file)) {
+      cat("   - Con información de partidos incluida\n")
+      cat("   - Listo para run_bcall_from_rollcall()\n")
+    } else {
+      cat("   - Sin información de partidos\n")
+      cat("   - Listo para clustering automático\n")
+      cat("   - Use generate_clustering_from_rollcall_direct() para continuar\n")
+    }
   }
 
   return(result)
