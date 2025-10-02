@@ -61,18 +61,3 @@ The package includes sample datasets:
 - Rollcall: Legislators as rows, votes as columns, values: 1 (Yes), -1 (No), 0 (Abstention), NA (Absent)
 - Party CSV: Two columns: `legislator` (matching rollcall row names), `party`
 
-## Installation and Testing
-
-After installation, test with the sample data:
-
-```r
-# Quick test
-library(bcall)
-legist_file <- system.file("extdata", "legist_chile.xlsx", package = "bcall")
-votes_file <- system.file("extdata", "votes_chile.xlsx", package = "bcall")
-rollcall_data <- excel_to_rollcall(legist_file, votes_file)
-```
-
-## License
-
-MIT
