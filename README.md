@@ -5,13 +5,9 @@ B-Call analysis for legislative voting data in R.
 ## Installation
 
 ```r
-# Install dependencies
-install.packages(c("R6", "dplyr", "ggplot2", "plotly", "readxl", "tidyr"))
-
 # Install bcall package from GitHub
 devtools::install_github("Alcatruz/bcall")
 library(bcall)
-library(readxl)
 ```
 
 ## Usage Examples
@@ -19,58 +15,62 @@ library(readxl)
 ### Path 1: Excel Files with Party Info → B-Call
 
 ```r
-# Using sample data included with package
-legist_file <- system.file("extdata", "legist_chile.xlsx", package = "bcall")
-votes_file <- system.file("extdata", "votes_chile.xlsx", package = "bcall")
+# Load Chilean sample data paths
+excel_paths <- load_sample_excel_paths()
 
-rollcall_data1 <- excel_to_rollcall(legist_file, votes_file)
-results1 <- run_bcall_from_rollcall(rollcall_data1, pivot = "Legislador_Derecha")
+rollcall_data <- excel_to_rollcall(excel_paths$legist_file, excel_paths$votes_file)
+results <- run_bcall_from_rollcall(rollcall_data, pivot = "Legislador_Derecha")
 
 # Visualize with party information from Excel
-plot_bcall_analysis_interactive(results1, color_by = "party")
+plot_bcall_analysis_interactive(results, color_by = "party")
 ```
 
 ### Path 2: CSV Rollcall → Automatic Clustering → B-Call
 
 ```r
-# Using sample data included with package
-rollcall_file <- system.file("extdata", "CHL-DIP-2019-rollcall.xlsx", package = "bcall")
-rollcall_data <- read_excel(rollcall_file)
+# Using sample USA rollcall data (CSV format)
+usa_rollcall_file <- system.file("extdata", "USA-House-2021-rollcall.csv", package = "bcall")
 
-legislators_names <- rollcall_data$legislators
-rollcall_matrix_temp <- as.data.frame(rollcall_data[, -1])
-rownames(rollcall_matrix_temp) <- legislators_names
-write.csv(rollcall_matrix_temp, "temp_rollcall.csv")
-
-rollcall_with_clusters2 <- generate_clustering_from_rollcall_direct("temp_rollcall.csv",
-                                                                   distance_method = 1,
-                                                                   pivot = "Alessandri, Jorge")
-results2 <- run_bcall_with_auto_clusters(rollcall_with_clusters2)
+# Generate automatic clustering from CSV
+rollcall_with_clusters <- generate_clustering_from_rollcall_direct(usa_rollcall_file,
+                                                                  distance_method = 1,
+                                                                  pivot = "Kast_Rist_Jose_Antonio")
+results <- run_bcall_with_auto_clusters(rollcall_with_clusters)
 
 # Visualize with automatic clustering
-plot_bcall_analysis_interactive(results2)
+plot_bcall_analysis_interactive(results)
 
-# Optional: correlation with NOMINATE scores
-nominate_file <- system.file("extdata", "CHL-DIP-2019-nominate.xlsx", package = "bcall")
-nominate_data <- read_excel(nominate_file)
-cat("Correlation with automatic clustering:",
-    cor(results2$results$d1, nominate_data$x1, use = "complete.obs"), "\n")
+# Check results summary
+summary(results$results$d1)
 
-# Clean up
-file.remove("temp_rollcall.csv")
+# Optional: Load and compare with NOMINATE scores
+nominate_file <- system.file("extdata", "USA-House-2021-nominate.csv", package = "bcall")
+nominate_data <- read.csv(nominate_file)
+cat("Correlation with NOMINATE:",
+    cor(results$results$d1, nominate_data$coord1D, use = "complete.obs"), "\n")
+```
+
+### Alternative: Load data as objects (no temp files)
+
+```r
+# Load data directly as R objects
+rollcall_matrix <- load_sample_rollcall("usa_2021")
+
+# Then proceed with clustering...
 ```
 
 ## Available Sample Data
 
 The package includes sample datasets:
 
-**Chilean Data:**
+**Chilean Data (Excel with party info):**
 - `legist_chile.xlsx` / `votes_chile.xlsx` - Chilean legislative data with party information
-- `CHL-DIP-2019-nominate.xlsx` / `CHL-DIP-2019-rollcall.xlsx` - Chilean NOMINATE scores and rollcall data
 
-**USA Data:**
-- `USA-House-2021-nominate.csv` / `USA-House-2021-rollcall.csv` - US House data
-- `USA-House-2022-rollcall.csv` - Additional US rollcall data
+**USA Data (CSV for auto-clustering):**
+- `USA-House-2021-nominate.csv` / `USA-House-2021-rollcall.csv` - US House data 2021
+- `USA-House-2022-rollcall.csv` - US House rollcall data 2022
+
+**CSV Structure:** Legislators as rows, votes as columns, values: 1 (Yes), -1 (No), 0 (Abstention), NA (Absent)
 
 Use `system.file("extdata", "filename", package = "bcall")` to access any included data file.
 
