@@ -1,41 +1,9 @@
-#' Load sample rollcall data as objects
+#' Load Chilean sample data directly (Excel format)
 #'
-#' @description Load rollcall data directly as R objects without temp files
-#' @param dataset Character, name of dataset to load
-#' @return Data.frame with rollcall matrix
+#' @description Load Chilean legislative data and convert to rollcall format
+#' @return List with rollcall_matrix and legislators_info
 #' @export
-load_sample_rollcall <- function(dataset = "usa_2021") {
-
-  valid_datasets <- c("usa_2021", "usa_2022")
-
-  if (!dataset %in% valid_datasets) {
-    stop(sprintf("Dataset '%s' not available. Valid options: %s",
-                dataset, paste(valid_datasets, collapse = ", ")))
-  }
-
-  if (dataset == "usa_2021") {
-    file_path <- system.file("extdata", "USA-House-2021-rollcall.csv", package = "bcall")
-  } else if (dataset == "usa_2022") {
-    file_path <- system.file("extdata", "USA-House-2022-rollcall.csv", package = "bcall")
-  }
-
-  if (file_path == "") {
-    stop(sprintf("Data file for '%s' not found in package", dataset))
-  }
-
-  cat(sprintf("Loading %s rollcall data...\n", dataset))
-  data <- read.csv(file_path, row.names = 1)
-  cat(sprintf("Loaded: %d legislators x %d votes\n", nrow(data), ncol(data)))
-
-  return(data)
-}
-
-#' Load sample data for excel workflow
-#'
-#' @description Load Chilean Excel data for Path 1 workflow
-#' @return List with file paths for excel_to_rollcall()
-#' @export
-load_sample_excel_paths <- function() {
+load_chile_sample <- function() {
 
   legist_file <- system.file("extdata", "legist_chile.xlsx", package = "bcall")
   votes_file <- system.file("extdata", "votes_chile.xlsx", package = "bcall")
@@ -44,10 +12,55 @@ load_sample_excel_paths <- function() {
     stop("Chilean Excel files not found in package")
   }
 
-  cat("Chilean Excel data paths ready for excel_to_rollcall()\n")
+  cat("Loading Chilean sample data...\n")
+  rollcall_data <- excel_to_rollcall(legist_file, votes_file)
+  cat("Chilean data ready for run_bcall_from_rollcall()\n")
 
-  return(list(
-    legist_file = legist_file,
-    votes_file = votes_file
-  ))
+  return(rollcall_data)
+}
+
+#' Load USA rollcall sample data (CSV format)
+#'
+#' @description Load USA rollcall data directly as matrix
+#' @param year Character, year to load ("2021" or "2022")
+#' @return Data.frame with rollcall matrix
+#' @export
+load_usa_rollcall <- function(year = "2021") {
+
+  if (year == "2021") {
+    file_path <- system.file("extdata", "USA-House-2021-rollcall.csv", package = "bcall")
+  } else if (year == "2022") {
+    file_path <- system.file("extdata", "USA-House-2022-rollcall.csv", package = "bcall")
+  } else {
+    stop("Year must be '2021' or '2022'")
+  }
+
+  if (file_path == "") {
+    stop(sprintf("USA %s rollcall file not found in package", year))
+  }
+
+  cat(sprintf("Loading USA %s rollcall data...\n", year))
+  data <- read.csv(file_path, row.names = 1)
+  cat(sprintf("Loaded: %d legislators x %d votes\n", nrow(data), ncol(data)))
+
+  return(data)
+}
+
+#' Load rollcall matrix from CSV file
+#'
+#' @description Load any CSV rollcall file (legislators as rows, votes as columns)
+#' @param csv_file Character, path to CSV file
+#' @return Data.frame with rollcall matrix
+#' @export
+load_rollcall_csv <- function(csv_file) {
+
+  if (!file.exists(csv_file)) {
+    stop(sprintf("File not found: %s", csv_file))
+  }
+
+  cat(sprintf("Loading rollcall data from: %s\n", csv_file))
+  data <- read.csv(csv_file, row.names = 1)
+  cat(sprintf("Loaded: %d legislators x %d votes\n", nrow(data), ncol(data)))
+
+  return(data)
 }
