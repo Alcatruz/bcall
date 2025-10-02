@@ -8,9 +8,8 @@ B-Call analysis for legislative voting data in R.
 # Install dependencies
 install.packages(c("R6", "dplyr", "ggplot2", "plotly", "readxl", "tidyr"))
 
-# Install bcall package
-setwd("path/to/B-Call")
-devtools::install("bcall")
+# Install bcall package from GitHub
+devtools::install_github("Alcatruz/bcall")
 library(bcall)
 ```
 
