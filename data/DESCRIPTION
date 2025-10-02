@@ -1,0 +1,27 @@
+Package: bcall
+Type: Package
+Title: B-Call Analysis for Legislative Voting Data
+Version: 1.0.0
+Author: B-Call Team
+Maintainer: B-Call Team <bcall@example.com>
+Description: Implements B-Call methodology for analyzing legislative voting data, integrating ideological position and political cohesion measurements. The package processes both Excel and CSV format data files and provides comprehensive analysis tools including automatic pivot selection, rollcall matrix conversion, visualization capabilities, and export functionality.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Depends:
+    R (>= 3.5.0)
+Imports:
+    R6 (>= 2.4.0),
+    dplyr (>= 1.0.0),
+    ggplot2 (>= 3.3.0),
+    plotly (>= 4.9.0),
+    readxl (>= 1.3.0),
+    tidyr (>= 1.1.0),
+    tibble,
+    tools,
+    utils
+Suggests:
+    testthat,
+    knitr,
+    rmarkdown
+RoxygenNote: 7.2.0
