@@ -34,7 +34,7 @@ usa_rollcall_file <- system.file("extdata", "USA-House-2021-rollcall.csv", packa
 # Generate automatic clustering from CSV
 rollcall_with_clusters <- generate_clustering_from_rollcall_direct(usa_rollcall_file,
                                                                   distance_method = 1,
-                                                                  pivot = "Kast_Rist_Jose_Antonio")
+                                                                  pivot = "ALLEN, Rick W.")
 results <- run_bcall_with_auto_clusters(rollcall_with_clusters)
 
 # Visualize with automatic clustering
