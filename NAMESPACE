@@ -22,6 +22,10 @@ export(load_rollcall_direct)
 export(generate_clustering_from_rollcall_direct)
 export(rollcall_directo_to_bcall)
 
+# Export sample data functions
+export(load_sample_rollcall)
+export(load_sample_excel_paths)
+
 # Import required packages
 import(R6)
 import(dplyr)
