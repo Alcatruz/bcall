@@ -59,25 +59,9 @@ The package includes sample datasets:
 - `legist_chile.xlsx` / `votes_chile.xlsx` - Chilean legislative data with party information
 
 **USA Data (CSV for auto-clustering):**
-- `USA-House-2021-nominate.csv` / `USA-House-2021-rollcall.csv` - US House data 2021
+- `USA-House-2021-rollcall.csv` - US House rollcall data 2021
 - `USA-House-2022-rollcall.csv` - US House rollcall data 2022
 
 **CSV Structure:** Legislators as rows, votes as columns, values: 1 (Yes), -1 (No), 0 (Abstention), NA (Absent)
 
 Use `system.file("extdata", "filename", package = "bcall")` to access any included data file.
-
-## Installation and Testing
-
-After installation, test with the sample data:
-
-```r
-# Quick test
-library(bcall)
-legist_file <- system.file("extdata", "legist_chile.xlsx", package = "bcall")
-votes_file <- system.file("extdata", "votes_chile.xlsx", package = "bcall")
-rollcall_data <- excel_to_rollcall(legist_file, votes_file)
-```
-
-## License
-
-MIT
