@@ -17,7 +17,7 @@ library(bcall)
 ```r
 # Load Chilean sample data (Excel with party info)
 rollcall_data <- load_chile_sample()
-results <- run_bcall_from_rollcall(rollcall_data, pivot = "Legislador_Derecha")
+results <- run_bcall_from_rollcall(rollcall_data, pivot = "Jorge_Alessandri_Vergara") # u otro de derecha
 
 # Visualize with party information
 plot_bcall_analysis_interactive(results, color_by = "party")
@@ -38,7 +38,7 @@ write.csv(usa_rollcall, "temp_rollcall.csv")
 # Generate automatic clustering from CSV
 rollcall_with_clusters <- generate_clustering_from_rollcall_direct("temp_rollcall.csv",
                                                                   distance_method = 1,
-                                                                  pivot = "Jorge_Alessandri_Vergara")
+                                                                  pivot = "ALLEN, Rick W.")
 results <- run_bcall_with_auto_clusters(rollcall_with_clusters)
 
 # Visualize with automatic clustering
