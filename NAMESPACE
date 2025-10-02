@@ -23,8 +23,11 @@ export(generate_clustering_from_rollcall_direct)
 export(rollcall_directo_to_bcall)
 
 # Export sample data functions
-export(load_sample_rollcall)
-export(load_sample_excel_paths)
+export(load_chile_sample)
+export(load_usa_rollcall)
+export(load_rollcall_csv)
+export(get_bcall_data)
+export(list_bcall_data)
 
 # Import required packages
 import(R6)
