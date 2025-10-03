@@ -1,6 +1,6 @@
 # bcall
 
-B-Call analysis for legislative voting data in R.
+B-Call analysis for legislative voting data in R. 
 
 ## Installation
 
@@ -61,3 +61,23 @@ The package includes sample datasets:
 - Rollcall: Legislators as rows, votes as columns, values: 1 (Yes), -1 (No), 0 (Abstention), NA (Absent)
 - Party CSV: Two columns: `legislator` (matching rollcall row names), `party`
 
+## Citation
+
+If you use this package, please cite:
+
+> Toro-Maureira S, Reutter J, Valenzuela L, Alcatruz D and Valenzuela M (2025) **B-Call: integrating ideological position and voting cohesion in legislative behavior**. *Frontiers in Political Science* 7:1670089. [https://doi.org/10.3389/fpos.2025.1670089](https://doi.org/10.3389/fpos.2025.1670089)
+>
+> Article page: [Frontiers in Political Science](https://www.frontiersin.org/journals/political-science/articles/10.3389/fpos.2025.1670089/abstract)
+
+### BibTeX
+```bibtex
+@article{ToroMaureira2025BCall,
+  author  = {Toro-Maureira, Sergio and Reutter, Juan and Valenzuela, Lucas and Alcatruz, Daniel and Valenzuela, Macarena},
+  title   = {B-Call: integrating ideological position and voting cohesion in legislative behavior},
+  journal = {Frontiers in Political Science},
+  year    = {2025},
+  volume  = {7},
+  pages   = {1670089},
+  doi     = {10.3389/fpos.2025.1670089},
+  url     = {https://www.frontiersin.org/journals/political-science/articles/10.3389/fpos.2025.1670089/abstract}
+}
