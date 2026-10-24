@@ -13,6 +13,11 @@ Complete tutorial with:
 - Downloadable datasets
 - Interactive visualizations
 
+**Analysis of seven legislative periods of the Chilean Chamber, 2002-2026 (in Spanish):**
+**[https://alcatruz.github.io/bcall-camara-2002-2026](https://alcatruz.github.io/bcall-camara-2002-2026/)**
+
+B-Call estimated for every legislative period since roll-call records began in 2002 (18,407 votes, 505 deputies), with interactive figures, estimates and code.
+
 ## Installation
 
 ```r
