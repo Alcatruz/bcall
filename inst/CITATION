@@ -1,0 +1,14 @@
+bibentry(
+  bibtype = "Article",
+  title   = "B-Call: integrating ideological position and voting cohesion in legislative behavior",
+  author  = c(person("Sergio", "Toro-Maureira"),
+              person("Juan", "Reutter"),
+              person("Lucas", "Valenzuela"),
+              person("Daniel", "Alcatruz"),
+              person("Macarena", "Valenzuela")),
+  journal = "Frontiers in Political Science",
+  year    = "2025",
+  volume  = "7",
+  pages   = "1670089",
+  doi     = "10.3389/fpos.2025.1670089"
+)
