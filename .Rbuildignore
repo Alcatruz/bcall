@@ -1,11 +1,14 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.Rhistory$
+^\.github$
 ^data_vieja$
 ^cl_dat$
 ^testing$
 ^results$
-^.*\.csv$
-^.*\.rds$
+^[^/]+\.csv$
+^[^/]+\.rds$
 ^tester.*\.R$
 ^tests_disabled$
+^bcalplot\.png$
+^bcallplot2\.png$
