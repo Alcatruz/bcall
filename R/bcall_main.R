@@ -32,7 +32,11 @@ validate_vote_values <- function(rollcall) {
 #' @param rollcall data.frame with rollcall voting data (legislators as rows, votes as columns)
 #'   Values: 1 (Yes), -1 (No), 0 (Abstention), NA (Absent)
 #' @param distance_method Integer, distance metric for clustering (1 = Manhattan, 2 = Euclidean)
-#' @param pivot Character, optional pivot legislator name (NULL for automatic selection from 'right' cluster)
+#' @param pivot Character, optional pivot legislator name. The pivot's cluster is
+#'   labelled 'right' and its side of d1 is positive. If NULL, the cluster that
+#'   contains the first row of \code{rollcall} is labelled 'right', its legislator
+#'   with the highest participation becomes the pivot, and a warning is given
+#'   because the sign of d1 is then arbitrary.
 #' @param threshold Numeric, minimum participation threshold (0.0-1.0)
 #' @param verbose Logical, whether to print progress messages
 #'
@@ -53,7 +57,8 @@ validate_vote_values <- function(rollcall) {
 #' )
 #'
 #' # Run automatic clustering analysis
-#' results <- bcall_auto(rollcall, distance_method = 1, threshold = 0.1, verbose = FALSE)
+#' results <- bcall_auto(rollcall, distance_method = 1, pivot = "Legislator_B",
+#'                       threshold = 0.1, verbose = FALSE)
 #'
 #' # View results
 #' head(results$results)
@@ -135,6 +140,10 @@ bcall_auto <- function(rollcall,
     } else {
       stop("No legislators found in 'right' cluster for pivot selection")
     }
+
+    warning("No pivot was given, so the sign of d1 is arbitrary: the cluster ",
+            "labelled 'right' is the one that contains the first row of `rollcall`. ",
+            "Pass `pivot` to fix the orientation.", call. = FALSE)
   }
 
   # Step 3: Run B-Call analysis

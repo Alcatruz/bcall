@@ -109,6 +109,7 @@ Let's analyze our sample rollcall data using automatic clustering:
 results_auto <- bcall_auto(
   rollcall = rollcall,
   distance_method = 1,  # 1 = Manhattan, 2 = Euclidean
+  pivot = "Legislator_B",  # Reference legislator; their side of d1 is positive
   threshold = 0.1,      # Minimum 10% participation
   verbose = FALSE
 )
@@ -119,7 +120,7 @@ head(results_auto$results)
 
 The results contain:
 
-- `d1`: Ideological position (higher values = more right-wing)
+- `d1`: Ideological position (higher values = closer to the pivot's side)
 - `d2`: Political cohesion (lower values = more cohesive)
 - `auto_cluster`: Automatically assigned cluster
 - `legislator`: Legislator name
@@ -165,7 +166,7 @@ The **pivot** is a reference legislator that defines the orientation of the d1 d
 
 - The pivot's cluster is labeled as "right"
 - The other cluster becomes "left"
-- If you don't specify a pivot in `bcall_auto()`, one is automatically selected from the "right" cluster
+- If you don't specify a pivot in `bcall_auto()`, the cluster that contains the first row of the rollcall is labelled "right" and the pivot is taken from it. The sign of d1 is then arbitrary, and the function warns about it
 
 **Important**: The pivot doesn't change the underlying analysis, only the interpretation. If your d1 values seem inverted, you can either:
 
@@ -205,8 +206,8 @@ results <- bcall(rollcall_data, clustering_data,
 
 ### d1 (Ideological Position)
 
-- **Positive values**: Right-wing positions
-- **Negative values**: Left-wing positions
+- **Positive values**: The pivot's side (right-wing when the pivot is a right-wing legislator)
+- **Negative values**: The opposite side
 - **Magnitude**: Distance from the center
 
 ### d2 (Political Cohesion)
@@ -243,7 +244,7 @@ results_auto$results %>%
 - `distance_method`: Distance metric for clustering
   - `1` = Manhattan distance (recommended)
   - `2` = Euclidean distance
-- `pivot`: Optional. Manually specify pivot legislator. If NULL, automatically selected.
+- `pivot`: Optional, but recommended. If NULL, the pivot is taken from the cluster that contains the first row, and the sign of d1 is arbitrary.
 
 ### `bcall()` Specific
 

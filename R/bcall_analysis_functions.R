@@ -30,7 +30,7 @@ utils::globalVariables(c("d1", "d2", "legislator"))
 #'   row.names = paste0("Leg_", LETTERS[1:5])
 #' )
 #'
-#' results <- bcall_auto(rollcall, verbose = FALSE)
+#' results <- bcall_auto(rollcall, pivot = "Leg_B", verbose = FALSE)
 #'
 #' # Create static plot
 #' plot_bcall_analysis(results)
@@ -132,7 +132,7 @@ plot_bcall_analysis <- function(bcall_results,
 #'   row.names = paste0("Leg_", LETTERS[1:5])
 #' )
 #'
-#' results <- bcall_auto(rollcall, verbose = FALSE)
+#' results <- bcall_auto(rollcall, pivot = "Leg_B", verbose = FALSE)
 #'
 #' # Create interactive plot (hover over points to see legislator names)
 #' plot_bcall_analysis_interactive(results)

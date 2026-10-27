@@ -85,7 +85,7 @@ The pivot legislator is crucial because it **defines the direction of the ideolo
 **How to choose your pivot:**
 - If you know the data: Choose a representative legislator from the political right → d1 > 0 will represent right-wing positions
 - If orientation appears inverted: Either change the pivot to someone from the opposite cluster, OR simply interpret d1 with reversed signs
-- If unsure: Let `bcall_auto()` select automatically (picks from "right" cluster by participation)
+- Without a pivot, `bcall_auto()` labels as "right" the cluster that contains the first row of `rollcall` and picks the pivot there by participation. The sign of d1 is then arbitrary, and the function warns about it
 
 ### Principle 2: User Clustering
 

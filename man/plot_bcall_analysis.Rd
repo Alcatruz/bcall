@@ -41,7 +41,7 @@ rollcall <- data.frame(
   row.names = paste0("Leg_", LETTERS[1:5])
 )
 
-results <- bcall_auto(rollcall, verbose = FALSE)
+results <- bcall_auto(rollcall, pivot = "Leg_B", verbose = FALSE)
 
 # Create static plot
 plot_bcall_analysis(results)
