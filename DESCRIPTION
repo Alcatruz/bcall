@@ -23,9 +23,9 @@ Depends:
     R (>= 4.1.0)
 Imports:
     R6 (>= 2.4.0),
-    ggplot2 (>= 3.3.0),
-    plotly (>= 4.9.0)
+    ggplot2 (>= 3.3.0)
 Suggests:
+    plotly (>= 4.9.0),
     testthat,
     knitr,
     rmarkdown

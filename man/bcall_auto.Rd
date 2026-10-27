@@ -59,7 +59,9 @@ head(results$results)
 # Visualize
 \donttest{
 plot_bcall_analysis(results)
-plot_bcall_analysis_interactive(results)
+if (requireNamespace("plotly", quietly = TRUE)) {
+  plot_bcall_analysis_interactive(results)
+}
 }
 
 }

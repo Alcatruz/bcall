@@ -1,5 +1,4 @@
 #' @import ggplot2
-#' @importFrom plotly plot_ly layout
 #' @import R6
 
 # Declare global variables used in dplyr/ggplot2 to avoid R CMD check NOTEs
@@ -115,7 +114,7 @@ plot_bcall_analysis <- function(bcall_results,
 
 #' Interactive B-Call Analysis Plot
 #'
-#' @description Creates interactive plotly visualization
+#' @description Creates interactive plotly visualization. Needs the plotly package.
 #' @param bcall_results List, output from bcall_auto() or bcall()
 #' @param title Character, plot title
 #' @param color_by Character, variable to color by ("auto" for automatic detection)
@@ -134,13 +133,20 @@ plot_bcall_analysis <- function(bcall_results,
 #' results <- bcall_auto(rollcall, pivot = "Leg_B", verbose = FALSE)
 #'
 #' # Create interactive plot (hover over points to see legislator names)
-#' plot_bcall_analysis_interactive(results)
+#' if (requireNamespace("plotly", quietly = TRUE)) {
+#'   plot_bcall_analysis_interactive(results)
+#' }
 #' }
 #'
 #' @export
 plot_bcall_analysis_interactive <- function(bcall_results,
                                            title = "B-Call Analysis: Legislative Voting",
                                            color_by = "auto") {
+
+  if (!requireNamespace("plotly", quietly = TRUE)) {
+    stop("plot_bcall_analysis_interactive() needs the plotly package: ",
+         "install.packages(\"plotly\")", call. = FALSE)
+  }
 
   if (!"results" %in% names(bcall_results)) {
     stop("Input must be results from bcall_auto() or bcall()")

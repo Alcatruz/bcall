@@ -21,7 +21,7 @@ plot_bcall_analysis_interactive(
 plotly object
 }
 \description{
-Creates interactive plotly visualization
+Creates interactive plotly visualization. Needs the plotly package.
 }
 \examples{
 \donttest{
@@ -36,7 +36,9 @@ rollcall <- data.frame(
 results <- bcall_auto(rollcall, pivot = "Leg_B", verbose = FALSE)
 
 # Create interactive plot (hover over points to see legislator names)
-plot_bcall_analysis_interactive(results)
+if (requireNamespace("plotly", quietly = TRUE)) {
+  plot_bcall_analysis_interactive(results)
+}
 }
 
 }

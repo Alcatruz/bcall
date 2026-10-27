@@ -190,7 +190,7 @@ df %>%
 
 **Visualization:**
 - `plot_bcall_analysis(results)` - Static ggplot2 plot
-- `plot_bcall_analysis_interactive(results)` - Interactive plotly plot
+- `plot_bcall_analysis_interactive(results)` - Interactive plotly plot (needs the plotly package)
 
 ### About the `threshold` parameter
 
