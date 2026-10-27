@@ -5,6 +5,8 @@
   d1 then depends on the order of the rows.
 * `bcall()` works with a single vote, and `metadata$n_legislators_original`
   counts the rows of `rollcall`.
+* Progress messages go through `message()`, so `suppressMessages()` silences
+  them, and the results have a short `print()` method.
 * `plot_bcall_analysis()` no longer uses the deprecated `aes_string()`.
 * dplyr is no longer a dependency, and plotly moved to Suggests: only
   `plot_bcall_analysis_interactive()` needs it.

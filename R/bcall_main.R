@@ -18,6 +18,17 @@ validate_vote_values <- function(rollcall) {
   }
 }
 
+# Report the number of legislators analyzed and the range of d1 and d2
+message_ranges <- function(results_df) {
+  rng <- function(x) {
+    x <- x[!is.na(x)]
+    if (length(x) == 0) return("NA")
+    paste0("[", round(min(x), 3), ", ", round(max(x), 3), "]")
+  }
+  message(nrow(results_df), " legislators analyzed; d1 in ", rng(results_df$d1),
+          ", d2 in ", rng(results_df$d2))
+}
+
 # ==============================================================================
 # PRINCIPLE 1: bcall_auto() - Automatic Clustering
 # ==============================================================================
@@ -40,7 +51,7 @@ validate_vote_values <- function(rollcall) {
 #' @param threshold Numeric, minimum participation threshold (0.0-1.0)
 #' @param verbose Logical, whether to print progress messages
 #'
-#' @return List with:
+#' @return A list of class \code{bcall_result}, printed briefly, with:
 #'   - results: data.frame with d1, d2, auto_cluster for each legislator
 #'   - bcall_object: BCall R6 object
 #'   - clustering_object: Clustering R6 object
@@ -78,8 +89,6 @@ bcall_auto <- function(rollcall,
                        threshold = 0.1,
                        verbose = TRUE) {
 
-  if (verbose) cat("=== B-CALL WITH AUTOMATIC CLUSTERING ===\n\n")
-
   # Validate rollcall
   if (!is.data.frame(rollcall)) {
     stop("rollcall must be a data.frame")
@@ -98,15 +107,12 @@ bcall_auto <- function(rollcall,
   validate_vote_values(rollcall)
 
   if (verbose) {
-    cat("Input validation:\n")
-    cat("  \u2713 Rollcall: ", nrow(rollcall), " legislators \u00d7 ", ncol(rollcall), " votes\n", sep = "")
-    cat("  \u2713 Distance method: ", distance_method, " (",
-        ifelse(distance_method == 1, "Manhattan", "Euclidean"), ")\n", sep = "")
-    cat("  \u2713 Threshold: ", threshold * 100, "%\n\n", sep = "")
+    message("B-Call with automatic clustering: ", nrow(rollcall), " legislators, ",
+            ncol(rollcall), " votes, ", ifelse(distance_method == 1, "Manhattan", "Euclidean"),
+            " distance, threshold ", threshold * 100, "%")
   }
 
   # Step 1: Automatic Clustering
-  if (verbose) cat("Step 1: Running automatic clustering...\n")
 
   clustering_obj <- Clustering$new(
     rollcalls = rollcall,
@@ -117,13 +123,8 @@ bcall_auto <- function(rollcall,
   clustering_df <- clustering_obj$clustering
 
   if (verbose) {
-    cat("  \u2713 Clustering completed\n")
-    cat("  - Distribution:\n")
     cluster_table <- table(clustering_df$cluster)
-    for (cluster_name in names(cluster_table)) {
-      cat("    * ", cluster_name, ": ", cluster_table[cluster_name], " legislators\n", sep = "")
-    }
-    cat("\n")
+    message("Clusters: ", paste(names(cluster_table), cluster_table, sep = " = ", collapse = ", "))
   }
 
   # Step 2: Auto-select pivot if not provided
@@ -136,8 +137,7 @@ bcall_auto <- function(rollcall,
       pivot <- names(participation)[which.max(participation)]
 
       if (verbose) {
-        cat("Step 2: Auto-selecting pivot...\n")
-        cat("  \u2713 Pivot: ", pivot, " (", round(participation[pivot] * 100, 1), "% participation)\n\n", sep = "")
+        message("Pivot: ", pivot, " (", round(participation[pivot] * 100, 1), "% participation)")
       }
     } else {
       stop("No legislators found in 'right' cluster for pivot selection")
@@ -149,7 +149,6 @@ bcall_auto <- function(rollcall,
   }
 
   # Step 3: Run B-Call analysis
-  if (verbose) cat("Step 3: Running B-Call analysis...\n")
 
   bcall_obj <- BCall$new(
     rollcall = rollcall,
@@ -158,8 +157,6 @@ bcall_auto <- function(rollcall,
     threshold = threshold,
     verbose = verbose
   )
-
-  if (verbose) cat("  \u2713 B-Call analysis completed\n\n")
 
   # Step 4: Prepare results
   results_df <- bcall_obj$stats
@@ -184,27 +181,15 @@ bcall_auto <- function(rollcall,
     date_analyzed = Sys.Date()
   )
 
-  if (verbose) {
-    cat("Results summary:\n")
-    cat("  - d1 range: [", round(min(results_df$d1, na.rm = TRUE), 3),
-        ", ", round(max(results_df$d1, na.rm = TRUE), 3), "]\n", sep = "")
-    cat("  - d2 range: [", round(min(results_df$d2, na.rm = TRUE), 3),
-        ", ", round(max(results_df$d2, na.rm = TRUE), 3), "]\n", sep = "")
-    cat("  - Legislators analyzed: ", nrow(results_df), "\n\n", sep = "")
-  }
+  if (verbose) message_ranges(results_df)
 
   # Return structure
-  result <- list(
+  result <- structure(list(
     results = results_df,
     bcall_object = bcall_obj,
     clustering_object = clustering_obj,
     metadata = metadata
-  )
-
-  if (verbose) {
-    cat("\u2713 Analysis complete!\n")
-    cat("  Use plot_bcall_analysis_interactive(results) to visualize\n\n")
-  }
+  ), class = "bcall_result")
 
   return(result)
 }
@@ -228,7 +213,7 @@ bcall_auto <- function(rollcall,
 #' @param threshold Numeric, minimum participation threshold (0.0-1.0)
 #' @param verbose Logical, whether to print progress messages
 #'
-#' @return List with:
+#' @return A list of class \code{bcall_result}, printed briefly, with:
 #'   - results: data.frame with d1, d2, cluster for each legislator
 #'   - bcall_object: BCall R6 object
 #'   - metadata: Analysis metadata
@@ -268,8 +253,6 @@ bcall <- function(rollcall,
                   pivot,
                   threshold = 0.1,
                   verbose = TRUE) {
-
-  if (verbose) cat("=== B-CALL WITH USER-PROVIDED CLUSTERING ===\n\n")
 
   # Validate rollcall
   if (!is.data.frame(rollcall)) {
@@ -329,18 +312,11 @@ bcall <- function(rollcall,
   pivot_cluster <- clustering[pivot, 1]
 
   if (verbose) {
-    cat("Input validation:\n")
-    cat("  \u2713 Rollcall: ", nrow(rollcall), " legislators \u00d7 ", ncol(rollcall), " votes\n", sep = "")
-    cat("  \u2713 Clustering: ", nrow(clustering), " legislators\n", sep = "")
-    cat("  \u2713 Pivot: ", pivot, " (cluster: ", pivot_cluster, ")\n", sep = "")
-    cat("  \u2713 Threshold: ", threshold * 100, "%\n\n", sep = "")
-
-    cat("Cluster distribution:\n")
     cluster_table <- table(clustering[, 1])
-    for (cluster_name in names(cluster_table)) {
-      cat("  - ", cluster_name, ": ", cluster_table[cluster_name], " legislators\n", sep = "")
-    }
-    cat("\n")
+    message("B-Call with user-provided clustering: ", nrow(rollcall), " legislators, ",
+            ncol(rollcall), " votes, threshold ", threshold * 100, "%")
+    message("Pivot: ", pivot, " (cluster ", pivot_cluster, ")")
+    message("Clusters: ", paste(names(cluster_table), cluster_table, sep = " = ", collapse = ", "))
   }
 
   # Ensure matching legislators
@@ -352,8 +328,8 @@ bcall <- function(rollcall,
 
   if (length(common_legislators) < nrow(rollcall)) {
     if (verbose) {
-      cat("Note: ", nrow(rollcall) - length(common_legislators),
-          " legislators in rollcall not found in clustering (will be excluded)\n\n", sep = "")
+      message(nrow(rollcall) - length(common_legislators),
+              " legislators in rollcall are not in clustering and will be excluded")
     }
   }
 
@@ -363,7 +339,6 @@ bcall <- function(rollcall,
   clustering <- clustering[common_legislators, , drop = FALSE]
 
   # Run B-Call analysis
-  if (verbose) cat("Running B-Call analysis...\n")
 
   bcall_obj <- BCall$new(
     rollcall = rollcall,
@@ -372,8 +347,6 @@ bcall <- function(rollcall,
     threshold = threshold,
     verbose = verbose
   )
-
-  if (verbose) cat("  \u2713 B-Call analysis completed\n\n")
 
   # Prepare results
   results_df <- bcall_obj$stats
@@ -397,26 +370,29 @@ bcall <- function(rollcall,
     date_analyzed = Sys.Date()
   )
 
-  if (verbose) {
-    cat("Results summary:\n")
-    cat("  - d1 range: [", round(min(results_df$d1, na.rm = TRUE), 3),
-        ", ", round(max(results_df$d1, na.rm = TRUE), 3), "]\n", sep = "")
-    cat("  - d2 range: [", round(min(results_df$d2, na.rm = TRUE), 3),
-        ", ", round(max(results_df$d2, na.rm = TRUE), 3), "]\n", sep = "")
-    cat("  - Legislators analyzed: ", nrow(results_df), "\n\n", sep = "")
-  }
+  if (verbose) message_ranges(results_df)
 
   # Return structure
-  result <- list(
+  result <- structure(list(
     results = results_df,
     bcall_object = bcall_obj,
     metadata = metadata
-  )
-
-  if (verbose) {
-    cat("\u2713 Analysis complete!\n")
-    cat("  Use plot_bcall_analysis_interactive(results, color_by = 'cluster') to visualize\n\n")
-  }
+  ), class = "bcall_result")
 
   return(result)
+}
+
+#' @export
+#' @noRd
+print.bcall_result <- function(x, n = 6, ...) {
+  m <- x$metadata
+  cat("B-Call results: ", m$n_legislators_analyzed, " of ", m$n_legislators_original,
+      " legislators, ", m$n_votes, " votes\n", sep = "")
+  cat("Pivot: ", m$pivot, " (", m$pivot_participation, " participation), threshold ",
+      m$threshold * 100, "%\n\n", sep = "")
+  print(utils::head(x$results, n), ...)
+  if (nrow(x$results) > n) {
+    cat("# ", nrow(x$results) - n, " more legislators in $results\n", sep = "")
+  }
+  invisible(x)
 }

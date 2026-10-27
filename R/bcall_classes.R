@@ -33,11 +33,6 @@ BCall <- R6::R6Class("BCall",
     initialize = function(rollcall, clustering, pivot = "", threshold = 0.1, verbose = TRUE) {
       self$verbose <- verbose
 
-      if (verbose) {
-        cat(sprintf('Rollcall dataframe contains %d legislators and %d votes.\n',
-                   nrow(rollcall), ncol(rollcall)))
-      }
-
       self$rollcall <- self$validate_dataframe(rollcall, 'rollcall')
       self$clustering <- self$validate_dataframe(clustering, 'clustering')
       self$pivot <- pivot
@@ -93,7 +88,7 @@ BCall <- R6::R6Class("BCall",
       clustering_filtered <- self$clustering[keep_legislators]
 
       if (self$verbose) {
-        cat(sprintf('%d legislators meet the participation threshold.\n', nrow(rollcall_filtered)))
+        message(sprintf('%d legislators meet the participation threshold.', nrow(rollcall_filtered)))
       }
 
       if (!(self$pivot %in% names(clustering_filtered))) {
@@ -118,7 +113,7 @@ BCall <- R6::R6Class("BCall",
       valid_votes <- overall_std > 0 & !is.na(overall_std)
       invalid_votes_count <- sum(!valid_votes, na.rm = TRUE)
       if (invalid_votes_count > 0 && self$verbose) {
-        cat(sprintf('Filtered %d votes with zero variance (unanimous votes).\n', invalid_votes_count))
+        message(sprintf('Filtered %d votes with zero variance (unanimous votes).', invalid_votes_count))
       }
       if (sum(valid_votes, na.rm = TRUE) == 0) {
         stop("No votes with variance > 0 available for analysis")

@@ -75,6 +75,13 @@ test_that("bad input gives clear errors", {
   expect_error(bcall(rc, three, pivot = "Leg_B", verbose = FALSE), "exactly 2 unique values")
 })
 
+test_that("results print briefly and messages can be silenced", {
+  expect_silent(res <- suppressMessages(bcall_auto(readme_rollcall(), pivot = "Leg_B")))
+  expect_s3_class(res, "bcall_result")
+  expect_output(print(res), "Pivot: Leg_B")
+  expect_message(bcall_auto(readme_rollcall(), pivot = "Leg_B"), "legislators analyzed")
+})
+
 test_that("the plots build", {
   res <- bcall_auto(readme_rollcall(), pivot = "Leg_B", verbose = FALSE)
   expect_s3_class(plot_bcall_analysis(res), "ggplot")

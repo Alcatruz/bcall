@@ -19,7 +19,7 @@ Values: 1 (Yes), -1 (No), 0 (Abstention), NA (Absent)}
 \item{verbose}{Logical, whether to print progress messages}
 }
 \value{
-List with:
+A list of class \code{bcall_result}, printed briefly, with:
   - results: data.frame with d1, d2, cluster for each legislator
   - bcall_object: BCall R6 object
   - metadata: Analysis metadata

@@ -29,7 +29,7 @@ because the sign of d1 is then arbitrary.}
 \item{verbose}{Logical, whether to print progress messages}
 }
 \value{
-List with:
+A list of class \code{bcall_result}, printed briefly, with:
   - results: data.frame with d1, d2, auto_cluster for each legislator
   - bcall_object: BCall R6 object
   - clustering_object: Clustering R6 object
