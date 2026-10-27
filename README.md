@@ -117,19 +117,21 @@ plot_bcall_analysis_interactive(results, color_by = "cluster")
 Both `bcall_auto()` and `bcall()` return a **list** with the following components:
 
 ```r
-results <- bcall_auto(rollcall)
+results <- bcall_auto(rollcall, pivot = "Leg_B")
 
 # Access the main results data.frame
 results$results
-#             d1      d2    legislator  auto_cluster
-# Leg_A     0.45    0.12   Leg_A       left
-# Leg_B    -0.32    0.08   Leg_B       right
-# ...
+#                d1        d2 legislator auto_cluster
+# Leg_A -0.74352102 0.2785371      Leg_A         left
+# Leg_B  1.36481227 0.3977486      Leg_B        right
+# Leg_C -0.07685435 0.9476066      Leg_C         left
+# Leg_D -0.06203237 0.3582163      Leg_D         left
+# Leg_E -0.72360680 0.3908790      Leg_E         left
 
 # Access metadata
 results$metadata
 # $principle: "PRINCIPLE 1: Auto-clustering"
-# $pivot: "Leg_A"
+# $pivot: "Leg_B"
 # $threshold: 0.1
 # $n_legislators_analyzed: 5
 # ...
