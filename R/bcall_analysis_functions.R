@@ -170,7 +170,8 @@ plot_bcall_analysis_interactive <- function(bcall_results,
   } else if("nm_y_apellidos" %in% colnames(df)) {
     "nm_y_apellidos"
   } else {
-    rownames(df)
+    df$legislator <- rownames(df)
+    "legislator"
   }
 
   # Create custom labels for tooltip

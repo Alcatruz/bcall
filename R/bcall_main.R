@@ -345,7 +345,8 @@ bcall <- function(rollcall,
   }
 
   # Filter to common legislators
-  rollcall <- rollcall[common_legislators, ]
+  n_legislators_original <- nrow(rollcall)
+  rollcall <- rollcall[common_legislators, , drop = FALSE]
   clustering <- clustering[common_legislators, , drop = FALSE]
 
   # Run B-Call analysis
@@ -376,7 +377,7 @@ bcall <- function(rollcall,
     pivot_cluster = pivot_cluster,
     pivot_participation = sprintf("%.1f%%", participation_all[pivot] * 100),
     threshold = threshold,
-    n_legislators_original = length(common_legislators),
+    n_legislators_original = n_legislators_original,
     n_legislators_analyzed = nrow(results_df),
     n_votes = ncol(rollcall),
     cluster_distribution = table(results_df$cluster),

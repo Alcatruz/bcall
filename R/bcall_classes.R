@@ -89,7 +89,7 @@ BCall <- R6::R6Class("BCall",
       participation <- 1 - rowSums(is.na(rollcall_matrix)) / ncol(rollcall_matrix)
 
       keep_legislators <- participation > self$threshold
-      rollcall_filtered <- rollcall_matrix[keep_legislators, ]
+      rollcall_filtered <- rollcall_matrix[keep_legislators, , drop = FALSE]
       clustering_filtered <- self$clustering[keep_legislators]
 
       if (self$verbose) {
