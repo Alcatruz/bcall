@@ -69,7 +69,7 @@ plot_bcall_analysis <- function(bcall_results,
 
   # Create base plot
   p <- ggplot2::ggplot(df, ggplot2::aes(x = d1, y = d2)) +
-    ggplot2::geom_point(ggplot2::aes_string(color = color_by), alpha = alpha, size = size) +
+    ggplot2::geom_point(ggplot2::aes(color = .data[[color_by]]), alpha = alpha, size = size) +
     ggplot2::labs(
       title = title,
       subtitle = sprintf("Pivot: %s | Threshold: %.0f%% | n=%d legislators",
