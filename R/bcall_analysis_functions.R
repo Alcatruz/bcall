@@ -1,4 +1,3 @@
-#' @import dplyr
 #' @import ggplot2
 #' @importFrom plotly plot_ly layout
 #' @import R6
@@ -193,7 +192,7 @@ plot_bcall_analysis_interactive <- function(bcall_results,
     type = "scatter",
     mode = "markers",
     marker = list(size = 8)
-  ) %>%
+  ) |>
     plotly::layout(
       title = title,
       xaxis = list(title = "d1 (Ideological Position)"),
