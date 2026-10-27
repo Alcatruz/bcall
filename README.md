@@ -19,7 +19,7 @@ B-Call analysis for legislative voting data in R.
 
 <div align="center">
   <h3>
-    <a href="https://alcatruz.github.io/bcall-example">
+    <a href="https://alcatruz.github.io/bcall-example/">
       🔗 See real-world examples with Chilean legislative data
     </a>
   </h3>
@@ -39,7 +39,7 @@ B-Call estimated for every legislative period since roll-call records began in 2
 ## Installation
 
 ```r
-devtools::install_github("bcallr/bcall")
+devtools::install_github("Alcatruz/bcall")
 library(bcall)
 ```
 

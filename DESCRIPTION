@@ -16,8 +16,8 @@ Description: Implements the B-Call method of Toro-Maureira et al. (2025)
     clustering. Users provide data as R data.frames with legislators as rows and votes
     as columns. Includes static and interactive visualization tools.
 License: MIT + file LICENSE
-URL: https://github.com/bcallr/bcall
-BugReports: https://github.com/bcallr/bcall/issues
+URL: https://github.com/Alcatruz/bcall
+BugReports: https://github.com/Alcatruz/bcall/issues
 Encoding: UTF-8
 Depends:
     R (>= 4.1.0)
