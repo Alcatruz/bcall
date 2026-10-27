@@ -7,17 +7,18 @@ Authors@R: c(
     person("Juan", "Reutter", role = "aut"),
     person("Lucas", "Valenzuela", role = "aut"),
     person("Daniel", "Alcatruz", email = "daniel.alcatruz@imfd.cl", role = c("aut", "cre")),
-    person("Macarena", "Valenzuela", role = "aut"))
-Description: Implements B-Call method for analyzing legislative voting data,
+    person("Macarena", "Valenzuela", role = "aut"),
+    person("B-Call Team", role = "cph"))
+Description: Implements the B-Call method of Toro-Maureira et al. (2025)
+    <doi:10.3389/fpos.2025.1670089> for analyzing legislative voting data,
     integrating ideological position (d1) and political cohesion (d2) measurements.
     Provides two main approaches: automatic clustering of legislators or user-provided
     clustering. Users provide data as R data.frames with legislators as rows and votes
-    as columns. Includes visualization tools and synthetic data for examples.
+    as columns. Includes static and interactive visualization tools.
 License: MIT + file LICENSE
 URL: https://github.com/bcallr/bcall
 BugReports: https://github.com/bcallr/bcall/issues
 Encoding: UTF-8
-LazyData: true
 Depends:
     R (>= 4.1.0)
 Imports:
