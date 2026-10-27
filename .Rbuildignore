@@ -12,3 +12,4 @@
 ^tests_disabled$
 ^bcalplot\.png$
 ^bcallplot2\.png$
+^cran-comments\.md$
