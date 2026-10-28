@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="bcallplot2.png" alt="B-Call Logo" width="400"/>
+  <img src="man/figures/logo.png" alt="B-Call Logo" width="400"/>
 </div>
 
 # bcall
