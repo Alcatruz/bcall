@@ -13,3 +13,7 @@
 ^bcalplot\.png$
 ^bcallplot2\.png$
 ^cran-comments\.md$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.gitignore$

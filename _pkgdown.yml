@@ -1,0 +1,14 @@
+url: https://alcatruz.github.io/bcall/
+template:
+  bootstrap: 5
+reference:
+  - title: "B-Call analysis"
+    desc: "Estimate the ideological position (d1) and the cohesion (d2) of each legislator from a roll-call matrix."
+    contents:
+      - bcall_auto
+      - bcall
+  - title: "Plots"
+    desc: "Static and interactive figures of the results."
+    contents:
+      - plot_bcall_analysis
+      - plot_bcall_analysis_interactive
