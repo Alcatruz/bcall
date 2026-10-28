@@ -1,8 +1,4 @@
-<div align="center">
-  <img src="man/figures/logo.png" alt="B-Call Logo" width="400"/>
-</div>
-
-# bcall
+# bcall <img src="man/figures/logo.png" align="right" height="138" alt="bcall logo" />
 
 B-Call analysis for legislative voting data in R.
 
@@ -15,26 +11,10 @@ B-Call analysis for legislative voting data in R.
 
 **Why B-Call?** Traditional models like W-NOMINATE work well in stable systems with disciplined parties. But in fragmented contexts (like Chile or Brazil), legislators with low cohesion appear artificially as "moderates" when they are actually volatile. B-Call addresses this by explicitly measuring that volatility as a second dimension.
 
-## 📚 Examples & Tutorials
+## Examples
 
-<div align="center">
-  <h3>
-    <a href="https://alcatruz.github.io/bcall-example/">
-      🔗 See real-world examples with Chilean legislative data
-    </a>
-  </h3>
-</div>
-
-Complete tutorial with:
-- 🗳️ Real voting data from Chile's Chamber of Deputies (2025)
-- 📖 Step-by-step analysis examples
-- 💾 Downloadable datasets
-- 📊 Interactive visualizations
-
-**Analysis of seven legislative periods of the Chilean Chamber, 2002-2026 (in Spanish):**
-**[https://alcatruz.github.io/bcall-camara-2002-2026](https://alcatruz.github.io/bcall-camara-2002-2026/)**
-
-B-Call estimated for every legislative period since roll-call records began in 2002 (18,407 votes, 505 deputies), with interactive figures, estimates and code.
+- [Examples with Chilean legislative data](https://alcatruz.github.io/bcall-example/). A step-by-step tutorial with roll-call data from the Chamber of Deputies (2025), downloadable datasets and interactive figures.
+- [Seven legislative periods of the Chilean Chamber, 2002-2026](https://alcatruz.github.io/bcall-camara-2002-2026/) (in Spanish). B-Call estimated for every period since roll-call records began in 2002 (18,407 votes, 505 deputies), with interactive figures, estimates and code.
 
 ## Installation
 
