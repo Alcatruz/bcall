@@ -1,0 +1,281 @@
+# bcall
+
+B-Call analysis for legislative voting data in R.
+
+## What is B-Call?
+
+**B-Call** is a method for analyzing legislative behavior that
+integrates two dimensions:
+
+- **d1 (Ideological position)**: Places each legislator on the
+  left-right spectrum based on their average voting pattern.
+- **d2 (Cohesion)**: Measures how consistent the voting behavior is. Low
+  d2 indicates predictable voting; high d2 indicates volatility.
+
+**Why B-Call?** Traditional models like W-NOMINATE work well in stable
+systems with disciplined parties. But in fragmented contexts (like Chile
+or Brazil), legislators with low cohesion appear artificially as
+“moderates” when they are actually volatile. B-Call addresses this by
+explicitly measuring that volatility as a second dimension.
+
+## Examples
+
+- [Examples with Chilean legislative
+  data](https://alcatruz.github.io/bcall-example/). A step-by-step
+  tutorial with roll-call data from the Chamber of Deputies (2025),
+  downloadable datasets and interactive figures.
+- [Seven legislative periods of the Chilean Chamber,
+  2002-2026](https://alcatruz.github.io/bcall-camara-2002-2026/) (in
+  Spanish). B-Call estimated for every period since roll-call records
+  began in 2002 (18,407 votes, 505 deputies), with interactive figures,
+  estimates and code.
+
+## Installation
+
+``` r
+
+devtools::install_github("bcallr/bcall")
+library(bcall)
+```
+
+## Quick Start
+
+### Principle 1: Automatic Clustering
+
+Provide only rollcall data. The package clusters legislators
+automatically
+
+**Vote values (required format):** - `1` = Yes/A favor (voted in
+favor) - `-1` = No/En contra (voted against) - `0` =
+Abstention/Abstención - `NA` = Absent/Ausente (did not vote)
+
+``` r
+
+# Your data: data.frame with rownames
+rollcall <- data.frame(
+  Vote_01 = c(1, -1, 1, 0, NA),   # 1=Yes, -1=No, 0=Abstention, NA=Absent
+  Vote_02 = c(1, -1, 1, 1, 1),
+  Vote_03 = c(-1, 1, 1, 0, -1),
+  row.names = c("Leg_A", "Leg_B", "Leg_C", "Leg_D", "Leg_E")
+)
+
+# Run analysis (automatic pivot selection)
+results <- bcall_auto(rollcall)
+
+# Or specify pivot to control d1 orientation
+results <- bcall_auto(rollcall, pivot = "Leg_B")
+
+# Visualize
+plot_bcall_analysis_interactive(results)
+```
+
+**Understanding the Pivot:**
+
+The pivot legislator is crucial because it **defines the direction of
+the ideological axis (d1)**: - The cluster containing the pivot is
+labeled **“right”** - The other cluster is labeled **“left”** - **d1 \>
+0**: Legislators closer to the pivot’s cluster (ideologically similar) -
+**d1 \< 0**: Legislators farther from the pivot’s cluster (ideologically
+opposite)
+
+**How to choose your pivot:** - If you know the data: Choose a
+representative legislator from the political right → d1 \> 0 will
+represent right-wing positions - If orientation appears inverted: Either
+change the pivot to someone from the opposite cluster, OR simply
+interpret d1 with reversed signs - Without a pivot,
+[`bcall_auto()`](https://alcatruz.github.io/bcall/reference/bcall_auto.md)
+labels as “right” the cluster that contains the first row of `rollcall`
+and picks the pivot there by participation. The sign of d1 is then
+arbitrary, and the function warns about it
+
+### Principle 2: User Clustering
+
+Provide rollcall data AND clustering assignment.
+
+``` r
+
+# Your rollcall data
+rollcall <- data.frame(
+  Vote_01 = c(1, -1, 1, 0, NA),
+  Vote_02 = c(1, -1, 1, 1, 1),
+  row.names = c("Leg_A", "Leg_B", "Leg_C", "Leg_D", "Leg_E")
+)
+
+# Your clustering (any 2 values)
+clustering <- data.frame(
+  cluster = c("Coalition", "Opposition", "Coalition", "Opposition", "Coalition"),
+  row.names = c("Leg_A", "Leg_B", "Leg_C", "Leg_D", "Leg_E")
+)
+
+# Run analysis
+results <- bcall(rollcall, clustering, pivot = "Leg_B")
+
+# Visualize
+plot_bcall_analysis_interactive(results, color_by = "cluster")
+```
+
+## Understanding the Results
+
+Both
+[`bcall_auto()`](https://alcatruz.github.io/bcall/reference/bcall_auto.md)
+and [`bcall()`](https://alcatruz.github.io/bcall/reference/bcall.md)
+return a **list** with the following components:
+
+``` r
+
+results <- bcall_auto(rollcall, pivot = "Leg_B")
+
+# Access the main results data.frame
+results$results
+#                d1        d2 legislator auto_cluster
+# Leg_A -0.74352102 0.2785371      Leg_A         left
+# Leg_B  1.36481227 0.3977486      Leg_B        right
+# Leg_C -0.07685435 0.9476066      Leg_C         left
+# Leg_D -0.06203237 0.3582163      Leg_D         left
+# Leg_E -0.72360680 0.3908790      Leg_E         left
+
+# Access metadata
+results$metadata
+# $principle: "PRINCIPLE 1: Auto-clustering"
+# $pivot: "Leg_B"
+# $threshold: 0.1
+# $n_legislators_analyzed: 5
+# ...
+
+# Access R6 objects (advanced)
+results$bcall_object         # BCall R6 object
+results$clustering_object    # Clustering R6 object (bcall_auto only)
+```
+
+**Key columns in `results$results`:** - **`d1`**: Ideological position
+(left-right spectrum) - **`d2`**: Political cohesion (lower = more
+predictable voting) - **`legislator`**: Legislator name (from
+rownames) - **`auto_cluster`** (bcall_auto) or **`cluster`** (bcall):
+Cluster assignment
+
+**How to extract the data.frame:**
+
+``` r
+
+# Get the data.frame
+df <- results$results
+
+# Export to CSV
+write.csv(df, "bcall_results.csv", row.names = FALSE)
+
+# Use in other analyses
+library(dplyr)
+df %>%
+  filter(d2 < 0.5) %>%  # High cohesion legislators
+  arrange(d1)            # Order by ideology
+```
+
+## Data Format
+
+**Rollcall:** - Type: `data.frame` with rownames - Rownames: Legislator
+names - Columns: Votes (any names) - Values: `1` (Yes), `-1` (No), `0`
+(Abstention), `NA` (Absent)
+
+**Clustering (Principle 2 only):** - Type: `data.frame` with 1 column
+and rownames - Values: Any 2 unique values (e.g., “A”/“B”,
+“Coalition”/“Opposition”, 1/2)
+
+**Pivot (Principle 2 only):** - Type: `character` (legislator name that
+exists in data)
+
+## Main Functions
+
+**Analysis:** - `bcall_auto(rollcall, pivot = NULL, threshold = 0.1)` -
+Automatic clustering + analysis - `pivot`: Optional. Legislator name to
+control d1 orientation - `threshold`: Minimum participation threshold
+(default: 0.1). Legislators must participate in at least this proportion
+of votes. - `bcall(rollcall, clustering, pivot, threshold = 0.1)` -
+Analysis with your clustering - `pivot`: Required. Legislator name to
+control d1 orientation - `threshold`: Minimum participation threshold
+(default: 0.1)
+
+**Visualization:** - `plot_bcall_analysis(results)` - Static ggplot2
+plot - `plot_bcall_analysis_interactive(results)` - Interactive plotly
+plot (needs the plotly package)
+
+### About the `threshold` parameter
+
+The `threshold` parameter controls the minimum participation level
+required for legislators to be included in the analysis: - **Default
+value**: 0.1 (10% participation) - **Lower values** (e.g., 0.05):
+Include legislators with very low participation - **Higher values**
+(e.g., 0.3): Only include legislators who voted in at least 30% of
+votes - Legislators below the threshold are excluded from the analysis -
+Used in both
+[`bcall_auto()`](https://alcatruz.github.io/bcall/reference/bcall_auto.md)
+and [`bcall()`](https://alcatruz.github.io/bcall/reference/bcall.md) to
+filter legislators by participation
+
+## Real Data Example
+
+``` r
+
+library(bcall)
+library(readr)
+library(dplyr)
+library(tibble)
+
+# Load your CSV with votes
+rollcall <- read_csv("votes.csv") %>%
+  rename(legislator = 1) %>%
+  column_to_rownames("legislator")
+
+# Automatic analysis
+results <- bcall_auto(rollcall)
+
+# Visualize
+plot_bcall_analysis_interactive(results)
+plot_bcall_analysis(results)
+```
+
+## Citation
+
+> Toro-Maureira S, Reutter J, Valenzuela L, Alcatruz D and Valenzuela M
+> (2025) **B-Call: integrating ideological position and voting cohesion
+> in legislative behavior**. *Frontiers in Political Science* 7:1670089.
+> [doi:10.3389/fpos.2025.1670089](https://doi.org/10.3389/fpos.2025.1670089)
+
+``` bibtex
+@article{ToroMaureira2025BCall,
+  author  = {Toro-Maureira, Sergio and Reutter, Juan and Valenzuela, Lucas and Alcatruz, Daniel and Valenzuela, Macarena},
+  title   = {B-Call: integrating ideological position and voting cohesion in legislative behavior},
+  journal = {Frontiers in Political Science},
+  year    = {2025},
+  volume  = {7},
+  pages   = {1670089},
+  doi     = {10.3389/fpos.2025.1670089}
+}
+```
+
+# Package index
+
+## B-Call analysis
+
+Estimate the ideological position (d1) and the cohesion (d2) of each
+legislator from a roll-call matrix.
+
+- [`bcall_auto()`](https://alcatruz.github.io/bcall/reference/bcall_auto.md)
+  : B-Call Analysis with Automatic Clustering
+- [`bcall()`](https://alcatruz.github.io/bcall/reference/bcall.md) :
+  B-Call Analysis with User-Provided Clustering
+
+## Plots
+
+Static and interactive figures of the results.
+
+- [`plot_bcall_analysis()`](https://alcatruz.github.io/bcall/reference/plot_bcall_analysis.md)
+  : Plot B-Call Analysis Results
+- [`plot_bcall_analysis_interactive()`](https://alcatruz.github.io/bcall/reference/plot_bcall_analysis_interactive.md)
+  : Interactive B-Call Analysis Plot
+
+# Articles
+
+### All vignettes
+
+- [Introduction to B-Call
+  Analysis](https://alcatruz.github.io/bcall/articles/bcall-introduction.md):

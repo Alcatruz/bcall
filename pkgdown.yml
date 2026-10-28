@@ -1,0 +1,9 @@
+pandoc: 3.8.3
+pkgdown: 2.2.1
+pkgdown_sha: ~
+articles:
+  bcall-introduction: bcall-introduction.html
+last_built: 2026-10-28T04:51Z
+urls:
+  reference: https://alcatruz.github.io/bcall/reference
+  article: https://alcatruz.github.io/bcall/articles
