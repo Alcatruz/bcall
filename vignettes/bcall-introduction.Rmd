@@ -37,7 +37,7 @@ If you use this package in your research, please cite:
 
 ```{r eval=FALSE}
 # Install from GitHub
-devtools::install_github("Alcatruz/bcall")
+devtools::install_github("bcallr/bcall")
 ```
 
 ```{r}
@@ -282,8 +282,8 @@ class(results_auto$bcall_object)
 For more information:
 
 - Package documentation: `?bcall_auto`, `?bcall`
-- GitHub repository: https://github.com/Alcatruz/bcall
-- Report issues: https://github.com/Alcatruz/bcall/issues
+- GitHub repository: https://github.com/bcallr/bcall
+- Report issues: https://github.com/bcallr/bcall/issues
 
 ## References
 

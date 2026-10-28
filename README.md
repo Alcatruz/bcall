@@ -39,7 +39,7 @@ B-Call estimated for every legislative period since roll-call records began in 2
 ## Installation
 
 ```r
-devtools::install_github("Alcatruz/bcall")
+devtools::install_github("bcallr/bcall")
 library(bcall)
 ```
 
